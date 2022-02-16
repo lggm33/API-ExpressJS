@@ -1,11 +1,10 @@
 const express = require('express'); 
 const userServices = require('../services/userServices');
 const router = express.Router();
-
 const service = new userServices()
 
-router.get('/', (req, res) => {
-  const users = service.find()
+router.get('/', async (req, res) => {
+  const users = await service.find()
   res.json({
     message: 'success',
     data: users

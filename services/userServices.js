@@ -1,19 +1,21 @@
+const boom = require('@hapi/boom');
 const faker = require('faker');
 class userServices {
 
   constructor() {
-    this.products = []
+    this.usersList = []
     this.generate()
   }
 
   generate() {
     const limit = 10
     for (let i = 0; i < limit; i++) {
-      this.products.push({
+      this.usersList.push({
         id: faker.datatype.uuid(),
         name: faker.name.firstName(),
         age: faker.datatype.number(100),
         image: faker.image.imageUrl(),
+        block: faker.datatype.boolean(),
       })
     }
   }
@@ -23,44 +25,50 @@ class userServices {
       id: faker.datatype.uuid(),
       ...data
     }
-    this.products.push(newUser)
+    this.usersList.push(newUser)
     return newUser
   }
 
   find() {
-    return this.products
+    return this.usersList
   }
 
   findOne(id) {
-    return this.products.find(item => item.id === id)
+    const findedUser = this.usersList.find(item => item.id === id)
+    if (!findedUser) {
+      throw boom.notFound('product not found')
+    } else if (findedUser.block) {
+      throw boom.conflict('user is block')
+    }
+    return findedUser
   }
 
   update(data, id) {
-    const indexUser = this.products.findIndex(item => item.id === id)
+    const indexUser = this.usersList.findIndex(item => item.id === id)
     if (indexUser === -1) {
-      throw new Error('Product not found')
+      throw boom.notFound('product not found')
     } else {
-      this.products[indexUser] = {...this.products[indexUser], ...data}
-      return this.products[indexUser]
+      this.usersList[indexUser] = {...this.usersList[indexUser], ...data}
+      return this.usersList[indexUser]
     }
   }
   
   updateAll(data, id) {
-    const indexUser = this.products.findIndex(item => item.id === id)
+    const indexUser = this.usersList.findIndex(item => item.id === id)
     if (indexUser === -1) {
-      throw new Error('Product not found')
+      throw boom.notFound('product not found')
     } else {
-      this.products[indexUser] = data
-      return this.products[indexUser]
+      this.usersList[indexUser] = data
+      return this.usersList[indexUser]
     }
   }
 
   delete(id) {
-    const indexUser = this.products.findIndex(item => item.id === id)
+    const indexUser = this.usersList.findIndex(item => item.id === id)
     if (indexUser === -1) {
-      throw new Error('Product not found')
+      throw boom.notFound('product not found')
     } else {
-      this.products.splice(indexUser, 1)
+      this.usersList.splice(indexUser, 1)
       return {message: 'delete success', id: id}
     }
   }
