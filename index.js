@@ -4,7 +4,7 @@ const routerAPI = require('./routes');
 const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/errorHandler');
 const app = express()                
 const cors = require('cors');
-const port = 3000      
+const port = process.env.PORT || 3000      
 
 app.use(express.json())
 
@@ -36,6 +36,6 @@ app.use(errorHandler)
 
 
 app.listen(port, () => {
-  console.log('Mi port es ' + port)
+  // console.log('Mi port es ' + port)
 })
 
